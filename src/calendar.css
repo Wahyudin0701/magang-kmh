@@ -1,0 +1,279 @@
+/* Calendar Grid Styles */
+.calendar-wrapper {
+  margin-top: 2rem;
+  animation: fadeUp 0.6s ease-out both;
+}
+
+.calendar-month {
+  margin-bottom: 3rem;
+}
+
+.calendar-month-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--green-900);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 days: Mon - Sat */
+  gap: 12px;
+}
+
+@media(max-width: 720px) {
+  .calendar-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media(max-width: 400px) {
+  .calendar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-card {
+  aspect-ratio: 1 / 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.calendar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--green-300);
+}
+
+.calendar-card.filled {
+  background: var(--green-500);
+  border-color: var(--green-600);
+}
+
+.calendar-card.filled > div:first-child {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.calendar-card.holiday {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.calendar-card-date {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--green-800);
+  line-height: 1;
+}
+
+.calendar-card.filled .calendar-card-date {
+  color: #ffffff;
+}
+
+.calendar-card.holiday .calendar-card-date {
+  color: var(--danger-text);
+}
+
+.calendar-card-subtitle {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  line-height: 1.2;
+}
+
+.calendar-card.filled .calendar-card-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.calendar-card-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 8px;
+  background: var(--gray-300);
+}
+
+.calendar-card.filled .calendar-card-status {
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.6);
+}
+
+.calendar-card.holiday .calendar-card-status {
+  background: var(--danger-text);
+}
+
+/* Expanded View */
+.expanded-view {
+  animation: fadeUp 0.4s ease-out both;
+  margin-top: 2rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--green-700);
+}
+
+.expanded-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  color: var(--text-body);
+}
+
+.expanded-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--gray-100);
+  background: var(--green-50);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expanded-date-info .day-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--green-900);
+}
+
+.expanded-date-info .full-date {
+  font-size: 0.85rem;
+  color: var(--green-700);
+}
+
+.expanded-card .log-form-inner {
+  background: transparent;
+  border-top: none;
+}
+
+/* Filled State for Expanded Card */
+.expanded-card.filled {
+  background: var(--green-500);
+  border-color: var(--green-600);
+  color: #ffffff;
+}
+
+.expanded-card.filled .expanded-header {
+  border-bottom: 1px solid var(--green-600);
+  background: var(--green-600);
+}
+
+.expanded-card.filled .expanded-date-info .day-name {
+  color: #ffffff;
+}
+
+.expanded-card.filled .expanded-date-info .full-date {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.expanded-card.filled .auto-save {
+  color: #ffffff;
+}
+
+.expanded-card.filled .form-field label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.expanded-card.filled .form-textarea {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.expanded-card.filled .form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.expanded-card.filled .form-textarea:focus {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.expanded-card.filled .upload-zone {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.expanded-card.filled .upload-text {
+  color: #ffffff !important;
+}
+
+/* Viewer Banner Styling */
+.viewer-banner {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.viewer-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.viewer-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+@media (max-width: 768px) {
+  .viewer-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .viewer-profile {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(245, 158, 11, 0.3);
+    padding-top: 0.8rem;
+    margin-top: 0.2rem;
+  }
+}
