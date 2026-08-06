@@ -352,6 +352,7 @@
       content: '';
       position: absolute; bottom: -20px; right: -20px;
       width: 80px; height: 80px; border-radius: 50%;
+      z-index: 0;
     }
     .stat-card:nth-child(1)::after { background: var(--green-50); }
     .stat-card:nth-child(2)::after { background: var(--gold-50); }
@@ -361,13 +362,14 @@
       width: 36px; height: 36px; border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
       margin-bottom: 0.85rem;
+      position: relative; z-index: 1;
     }
     .stat-icon svg { width: 18px; height: 18px; }
     .stat-card:nth-child(1) .stat-icon { background: var(--green-50); color: var(--green-600); border: 1px solid var(--green-200); }
     .stat-card:nth-child(2) .stat-icon { background: var(--gold-50);  color: var(--gold-600);  border: 1px solid var(--gold-200); }
     .stat-card:nth-child(3) .stat-icon { background: var(--green-50); color: var(--green-500); border: 1px solid var(--green-200); }
 
-    .stat-value { font-size: 2.1rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
+    .stat-value { font-size: 2.1rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; position: relative; z-index: 1; }
     .stat-card:nth-child(1) .stat-value { color: var(--green-800); }
     .stat-card:nth-child(2) .stat-value { color: var(--gold-700); }
     .stat-card:nth-child(3) .stat-value { color: var(--green-700); }
@@ -375,6 +377,7 @@
     .stat-label {
       font-size: 0.72rem; color: var(--text-muted); font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.07em;
+      position: relative; z-index: 1;
     }
 
     /* ==================== MONTH HEADER ==================== */
