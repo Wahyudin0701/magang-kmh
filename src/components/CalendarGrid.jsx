@@ -5,7 +5,8 @@ import { format, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 import DayForm from './DayForm';
 import DayView from './DayView';
-import { ArrowLeft, Loader2, Calendar, CheckCircle2, Clock, Eye } from 'lucide-react';
+import TableView from './TableView';
+import { ArrowLeft, Loader2, Calendar, CheckCircle2, Clock, Eye, LayoutGrid, Table2 } from 'lucide-react';
 import '../calendar.css';
 
 export default function CalendarGrid({ session, isViewer }) {
@@ -15,6 +16,7 @@ export default function CalendarGrid({ session, isViewer }) {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const [viewMode, setViewMode] = useState('card'); // 'card' | 'table'
 
   useEffect(() => {
     fetchEntries();
@@ -215,57 +217,80 @@ export default function CalendarGrid({ session, isViewer }) {
         </div>
       </div>
 
-      <div className="calendar-wrapper">
-      {Object.keys(groupedByMonth).map(monthName => (
-        <div key={monthName} className="calendar-month">
-          <div className="calendar-month-title">
-            <div className="month-dot"></div>
-            {monthName}
-          </div>
-          
-          <div className="calendar-grid">
-            {groupedByMonth[monthName].map(entry => {
-              const d = parseISO(entry.date);
-              const dayStr = format(d, 'dd');
-              const dayShort = format(d, 'EEEE', { locale: id }).substring(0, 3); // Sen, Sel...
-              const isFilled = entry.activity?.trim() !== '' || entry.description?.trim() !== '' || entry.photos?.length > 0;
-              
-              const dayIndex = entries.findIndex(e => e.id === entry.id);
-              
-              let cardClass = 'calendar-card';
-              if (entry.is_holiday) cardClass += ' holiday';
-              else if (isFilled) cardClass += ' filled';
-
-              return (
-                <div 
-                  key={entry.id} 
-                  className={cardClass}
-                  onClick={() => {
-                    if (isViewer) {
-                      // Viewer can click to read any day
-                      setSelectedEntry(entry);
-                    } else if (!entry.is_holiday) {
-                      setSelectedEntry(entry);
-                    }
-                  }}
-                  style={isViewer ? { cursor: 'pointer' } : {}}
-                >
-                  <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
-                    DAY
-                  </div>
-                  <div className="calendar-card-date" style={{ fontSize: '2.4rem', marginBottom: '4px' }}>
-                    {dayIndex + 1}
-                  </div>
-                  <div className="calendar-card-subtitle">
-                    {format(d, 'EEEE, d MMM', { locale: id })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      {/* View Toggle */}
+      <div className="view-toggle-bar">
+        <button
+          className={`view-toggle-btn ${viewMode === 'card' ? 'active' : ''}`}
+          onClick={() => setViewMode('card')}
+        >
+          <LayoutGrid size={15} /> Kartu
+        </button>
+        <button
+          className={`view-toggle-btn ${viewMode === 'table' ? 'active' : ''}`}
+          onClick={() => setViewMode('table')}
+        >
+          <Table2 size={15} /> Tabel
+        </button>
       </div>
+
+      {viewMode === 'table' ? (
+        <TableView
+          entries={entries}
+          isViewer={isViewer}
+          onSelectEntry={(entry) => setSelectedEntry(entry)}
+        />
+      ) : (
+        <div className="calendar-wrapper">
+        {Object.keys(groupedByMonth).map(monthName => (
+          <div key={monthName} className="calendar-month">
+            <div className="calendar-month-title">
+              <div className="month-dot"></div>
+              {monthName}
+            </div>
+            
+            <div className="calendar-grid">
+              {groupedByMonth[monthName].map(entry => {
+                const d = parseISO(entry.date);
+                const dayStr = format(d, 'dd');
+                const dayShort = format(d, 'EEEE', { locale: id }).substring(0, 3);
+                const isFilled = entry.activity?.trim() !== '' || entry.description?.trim() !== '' || entry.photos?.length > 0;
+                
+                const dayIndex = entries.findIndex(e => e.id === entry.id);
+                
+                let cardClass = 'calendar-card';
+                if (entry.is_holiday) cardClass += ' holiday';
+                else if (isFilled) cardClass += ' filled';
+
+                return (
+                  <div 
+                    key={entry.id} 
+                    className={cardClass}
+                    onClick={() => {
+                      if (isViewer) {
+                        setSelectedEntry(entry);
+                      } else if (!entry.is_holiday) {
+                        setSelectedEntry(entry);
+                      }
+                    }}
+                    style={isViewer ? { cursor: 'pointer' } : {}}
+                  >
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                      DAY
+                    </div>
+                    <div className="calendar-card-date" style={{ fontSize: '2.4rem', marginBottom: '4px' }}>
+                      {dayIndex + 1}
+                    </div>
+                    <div className="calendar-card-subtitle">
+                      {format(d, 'EEEE, d MMM', { locale: id })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+        </div>
+      )}
     </>
   );
 }
