@@ -3,7 +3,7 @@ import "./index.css";
 import Auth from "./components/Auth";
 import CalendarGrid from "./components/CalendarGrid";
 import { supabase } from "./lib/supabase";
-import { VIEWER_EMAIL } from "./lib/viewerConfig";
+import { VIEWER_EMAILS } from "./lib/viewerConfig";
 import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye } from "lucide-react";
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
   }, []);
 
   const [exporting, setExporting] = useState(false);
-  const isViewer = session?.user?.email === VIEWER_EMAIL;
+  const isViewer = VIEWER_EMAILS.includes(session?.user?.email);
 
   const exportToExcel = async () => {
     setExporting(true);

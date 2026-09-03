@@ -119,45 +119,50 @@ export default function CalendarGrid({ session, isViewer }) {
   return (
     <>
       {/* Viewer Mode Banner */}
-      {isViewer && (
-        <div className="viewer-banner">
-          <div className="viewer-banner-left">
-            <div style={{
-              width: '36px', height: '36px', borderRadius: '50%',
-              background: 'rgba(245,158,11,0.2)', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', flexShrink: 0
-            }}>
-              <Eye size={18} color="#92400e" />
+      {isViewer && (() => {
+        const isMentor = session?.user?.email === 'mentormagangkmh@gmail.com';
+        const roleTitle = isMentor ? 'Mode Monitoring Mentor Lapangan' : 'Mode Monitoring Dosen Pembimbing';
+        const profileName = isMentor ? 'Mentor Lapangan' : 'Renaldi Yulvianda, M.Kom.';
+        const profileRole = isMentor ? 'Mentor PT KMH' : 'Dosen Pembimbing';
+
+        return (
+          <div className="viewer-banner">
+            <div className="viewer-banner-left">
+              <div style={{
+                width: '36px', height: '36px', borderRadius: '50%',
+                background: 'rgba(245,158,11,0.2)', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', flexShrink: 0
+              }}>
+                <Eye size={18} color="#92400e" />
+              </div>
+              <div>
+                <div style={{ color: '#92400e', fontSize: '0.85rem', fontWeight: 700, marginBottom: '2px' }}>
+                  {roleTitle}
+                </div>
+                <div style={{ color: '#b45309', fontSize: '0.78rem', fontWeight: 500 }}>
+                  Anda sedang memantau logbook tim magang KMH - PT Kerinci Merangin Hidro
+                </div>
+              </div>
             </div>
-            <div>
-              <div style={{ color: '#92400e', fontSize: '0.85rem', fontWeight: 700, marginBottom: '2px' }}>
-                Mode Monitoring Dosen Pembimbing
+
+            <div className="viewer-profile">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+                 <div style={{ color: '#92400e', fontSize: '0.75rem', fontWeight: 700, lineHeight: 1.2 }}>
+                   {profileName}
+                 </div>
+                 <div style={{ color: '#b45309', fontSize: '0.65rem', fontWeight: 600 }}>
+                   {profileRole}
+                 </div>
               </div>
-              <div style={{ color: '#b45309', fontSize: '0.78rem', fontWeight: 500 }}>
-                Anda sedang memantau logbook tim magang KMH - PT Kerinci Merangin Hidro
-              </div>
+              <img 
+                src="/dosen.png" 
+                alt="Foto Profil" 
+                style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(245,158,11,0.5)' }} 
+              />
             </div>
           </div>
-          
-
-
-          <div className="viewer-profile">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-               <div style={{ color: '#92400e', fontSize: '0.75rem', fontWeight: 700, lineHeight: 1.2 }}>
-                 Renaldi Yulvianda, M.Kom.
-               </div>
-               <div style={{ color: '#b45309', fontSize: '0.65rem', fontWeight: 600 }}>
-                 Dosen Pembimbing
-               </div>
-            </div>
-            <img 
-              src="/dosen.png" 
-              alt="Foto Dosen" 
-              style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(245,158,11,0.5)' }} 
-            />
-          </div>
-        </div>
-      )}
+        );
+      })()}
       <div className="hero">
         <div>
           <div className="hero-eyebrow">
