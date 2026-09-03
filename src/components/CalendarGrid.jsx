@@ -6,7 +6,7 @@ import { id } from 'date-fns/locale';
 import DayForm from './DayForm';
 import DayView from './DayView';
 import TableView from './TableView';
-import { ArrowLeft, Loader2, Calendar, CheckCircle2, Clock, Eye, LayoutGrid, Table2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, CheckCircle2, Clock, Eye, LayoutGrid, Table2, Users } from 'lucide-react';
 import '../calendar.css';
 
 export default function CalendarGrid({ session, isViewer }) {
@@ -154,11 +154,22 @@ export default function CalendarGrid({ session, isViewer }) {
                    {profileRole}
                  </div>
               </div>
-              <img 
-                src="/dosen.png" 
-                alt="Foto Profil" 
-                style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(245,158,11,0.5)' }} 
-              />
+              {isMentor ? (
+                <div style={{
+                  width: '38px', height: '38px', borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'var(--bg-card, #ffffff)', border: '2px solid rgba(245,158,11,0.5)',
+                  color: '#b45309'
+                }}>
+                  <Users size={20} />
+                </div>
+              ) : (
+                <img 
+                  src="/dosen.png" 
+                  alt="Foto Profil" 
+                  style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(245,158,11,0.5)' }} 
+                />
+              )}
             </div>
           </div>
         );
