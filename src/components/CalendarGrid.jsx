@@ -67,6 +67,27 @@ export default function CalendarGrid({ session, isViewer }) {
     setSelectedEntry(updatedEntry);
   };
 
+  // Handle browser back button: when user opens a day, push a history state.
+  // When back is pressed, popstate fires and we return to the calendar.
+  const openEntry = (entry) => {
+    window.history.pushState({ dayOpen: true }, '');
+    setSelectedEntry(entry);
+  };
+
+  const closeEntry = () => {
+    setSelectedEntry(null);
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedEntry) {
+        setSelectedEntry(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [selectedEntry]);
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
@@ -90,7 +111,7 @@ export default function CalendarGrid({ session, isViewer }) {
       <div className="expanded-view">
         <button 
           className="btn-back-text" 
-          onClick={() => setSelectedEntry(null)}
+          onClick={() => closeEntry()}
           style={{ 
             background: 'none', border: 'none', padding: '0 0 1rem 0', 
             display: 'inline-flex', alignItems: 'center', gap: '0.4rem', 
@@ -253,7 +274,7 @@ export default function CalendarGrid({ session, isViewer }) {
         <TableView
           entries={entries}
           isViewer={isViewer}
-          onSelectEntry={(entry) => setSelectedEntry(entry)}
+          onSelectEntry={(entry) => openEntry(entry)}
         />
       ) : (
         <div className="calendar-wrapper">
@@ -283,9 +304,9 @@ export default function CalendarGrid({ session, isViewer }) {
                     className={cardClass}
                     onClick={() => {
                       if (isViewer) {
-                        setSelectedEntry(entry);
+                        openEntry(entry);
                       } else if (!entry.is_holiday) {
-                        setSelectedEntry(entry);
+                        openEntry(entry);
                       }
                     }}
                     style={isViewer ? { cursor: 'pointer' } : {}}
