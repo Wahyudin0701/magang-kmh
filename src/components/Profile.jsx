@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../lib/supabase';
+import { getStudentName } from '../lib/studentConfig';
 import { ArrowLeft, Mail, User, Shield, KeyRound, Loader2 } from 'lucide-react';
 
 export default function Profile({ session, isViewer, onBack }) {
@@ -64,7 +65,7 @@ export default function Profile({ session, isViewer, onBack }) {
             <User size={40} color="white" />
           </div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
-            {session.user.email.split('@')[0]}
+            {isViewer ? 'Pengawas / Mentor' : getStudentName(session.user.email)}
           </h2>
           <div style={{
             marginTop: '0.5rem', padding: '0.3rem 0.8rem', background: 'rgba(255,255,255,0.2)',

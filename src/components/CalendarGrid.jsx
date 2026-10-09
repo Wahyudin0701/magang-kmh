@@ -6,6 +6,7 @@ import { id } from 'date-fns/locale';
 import DayForm from './DayForm';
 import DayView from './DayView';
 import TableView from './TableView';
+import { getStudentName } from '../lib/studentConfig';
 import { ArrowLeft, Loader2, Calendar, CheckCircle2, Clock, Eye, LayoutGrid, Table2, Users } from 'lucide-react';
 import '../calendar.css';
 
@@ -173,7 +174,7 @@ export default function CalendarGrid({ session, isViewer }) {
                   >
                     {userIds.map(uid => {
                       const userEntry = allEntries.find(e => e.user_id === uid);
-                      const displayLabel = userEntry?.student_email || `Peserta (${uid.substring(0, 6)})`;
+                      const displayLabel = userEntry?.student_email ? getStudentName(userEntry.student_email) : `Peserta (${uid.substring(0, 6)})`;
                       return (
                         <option key={uid} value={uid}>{displayLabel}</option>
                       );

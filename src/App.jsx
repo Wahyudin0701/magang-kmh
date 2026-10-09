@@ -6,6 +6,7 @@ import Profile from "./components/Profile";
 import ResetPassword from "./components/ResetPassword";
 import { supabase } from "./lib/supabase";
 import { VIEWER_EMAILS } from "./lib/viewerConfig";
+import { getStudentName } from "./lib/studentConfig";
 import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown } from "lucide-react";
 
 function App() {
@@ -75,7 +76,11 @@ function App() {
 
       worksheet.mergeCells('A2:F2');
       const subtitleCell = worksheet.getCell('A2');
-      subtitleCell.value = `PT KERINCI MERANGIN HIDRO - ${session.user.email}`;
+      
+      const { getStudentName } = await import('./lib/studentConfig');
+      const studentName = getStudentName(session.user.email);
+      
+      subtitleCell.value = `PT KERINCI MERANGIN HIDRO - ${studentName.toUpperCase()}`;
       subtitleCell.font = { name: 'Arial', size: 12, bold: true };
       subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
@@ -262,8 +267,9 @@ function App() {
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
-      const safeEmail = session.user.email.split('@')[0];
-      saveAs(blob, `Logbook_Magang_KMH_${safeEmail}.xlsx`);
+      const { getStudentName } = await import('./lib/studentConfig');
+      const safeName = getStudentName(session.user.email).replace(/[^a-zA-Z0-9]/g, '_');
+      saveAs(blob, `Logbook_Magang_KMH_${safeName}.xlsx`);
     } catch (err) {
       alert("Gagal mengekspor data: " + err.message);
     } finally {
@@ -319,7 +325,7 @@ function App() {
               </div>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
-                  {session.user.email.split('@')[0]}
+                  {isViewer ? 'Pengawas' : getStudentName(session.user.email)}
                 </div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {isViewer ? 'PENGAWAS' : 'MAHASISWA'}
