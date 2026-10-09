@@ -7,12 +7,25 @@ import ResetPassword from "./components/ResetPassword";
 import { supabase } from "./lib/supabase";
 import { VIEWER_EMAILS } from "./lib/viewerConfig";
 import { getStudentName } from "./lib/studentConfig";
-import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown } from "lucide-react";
+import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown, FileText } from "lucide-react";
+import { exportToWord } from "./lib/exportWord";
 
 function App() {
   const [session, setSession] = useState(null);
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isRecovering, setIsRecovering] = useState(false);
+  const [exportingWord, setExportingWord] = useState(false);
+
+  const handleExportWord = async () => {
+    setExportingWord(true);
+    try {
+      await exportToWord(session);
+    } catch (err) {
+      alert("Gagal mengekspor Word: " + err.message);
+    } finally {
+      setExportingWord(false);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -358,18 +371,32 @@ function App() {
                   </button>
                   
                   {!isViewer && (
-                    <button 
-                      onClick={exportToExcel} disabled={exporting}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
-                        background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
-                        cursor: exporting ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 600, 
-                        color: 'var(--green-600)', textAlign: 'left', opacity: exporting ? 0.6 : 1
-                      }}
-                    >
-                      {exporting ? <Loader2 size={18} className="spin" /> : <FileSpreadsheet size={18} />} 
-                      {exporting ? "Menyiapkan..." : "Export Excel"}
-                    </button>
+                    <>
+                      <button 
+                        onClick={exportToExcel} disabled={exporting}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                          background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
+                          cursor: exporting ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 600, 
+                          color: 'var(--green-600)', textAlign: 'left', opacity: exporting ? 0.6 : 1
+                        }}
+                      >
+                        {exporting ? <Loader2 size={18} className="spin" /> : <FileSpreadsheet size={18} />} 
+                        {exporting ? "Menyiapkan..." : "Export Excel"}
+                      </button>
+                      <button 
+                        onClick={handleExportWord} disabled={exportingWord}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                          background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
+                          cursor: exportingWord ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 600, 
+                          color: '#0054a6', textAlign: 'left', opacity: exportingWord ? 0.6 : 1
+                        }}
+                      >
+                        {exportingWord ? <Loader2 size={18} className="spin" /> : <FileText size={18} />} 
+                        {exportingWord ? "Menyiapkan..." : "Export Word (.docx)"}
+                      </button>
+                    </>
                   )}
 
                   <button 
