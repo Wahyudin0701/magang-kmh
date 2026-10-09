@@ -5,18 +5,22 @@ import { ArrowLeft, Mail, User, Shield, KeyRound, Loader2 } from 'lucide-react';
 export default function Profile({ session, isViewer, onBack }) {
   const [resetting, setResetting] = React.useState(false);
   const [resetMsg, setResetMsg] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
 
-  const handlePasswordReset = async () => {
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
     setResetting(true);
     setResetMsg('');
-    const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
-      redirectTo: window.location.origin,
+    
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
     });
     
     if (error) {
-      setResetMsg('Gagal mengirim link: ' + error.message);
+      setResetMsg('Gagal mengganti password: ' + error.message);
     } else {
-      setResetMsg('Link ganti password telah dikirim ke email Anda!');
+      setResetMsg('Password berhasil diubah!');
+      setNewPassword('');
     }
     setResetting(false);
   };
@@ -102,21 +106,37 @@ export default function Profile({ session, isViewer, onBack }) {
 
             <div>
               <h3 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '1rem', fontWeight: 700 }}>
-                Keamanan
+                Keamanan (Ganti Password)
               </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: 1.5 }}>
-                Untuk mengganti kata sandi (password), kami akan mengirimkan tautan reset ke email Anda. Silakan klik tautan tersebut untuk membuat kata sandi baru.
-              </p>
               
-              <button 
-                onClick={handlePasswordReset}
-                disabled={resetting}
-                className="btn btn-outline"
-                style={{ width: 'auto' }}
-              >
-                {resetting ? <Loader2 size={16} className="spin" /> : <KeyRound size={16} />}
-                <span className="btn-text">{resetting ? 'Mengirim...' : 'Kirim Link Ganti Password'}</span>
-              </button>
+              <form onSubmit={handlePasswordReset} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '300px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>Password Baru</label>
+                  <input 
+                    type="password" 
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    placeholder="Minimal 6 karakter"
+                    style={{
+                      width: '100%', padding: '0.6rem 0.8rem',
+                      border: '1.5px solid var(--gray-200)', borderRadius: 'var(--radius-sm)',
+                      outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem'
+                    }}
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  disabled={resetting || newPassword.length < 6}
+                  className="btn btn-green"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  {resetting ? <Loader2 size={16} className="spin" /> : <KeyRound size={16} />}
+                  <span className="btn-text">{resetting ? 'Menyimpan...' : 'Simpan Password Baru'}</span>
+                </button>
+              </form>
 
               {resetMsg && (
                 <div style={{ 
