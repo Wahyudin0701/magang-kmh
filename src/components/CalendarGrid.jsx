@@ -44,7 +44,7 @@ export default function CalendarGrid({ session, isViewer }) {
       }
     } else {
       // Student: auto initialize then fetch own entries
-      await initializeLogbook(session.user.id);
+      await initializeLogbook(session);
       const { data, error } = await supabase
         .from('logbook_entries')
         .select('*')
@@ -147,8 +147,8 @@ export default function CalendarGrid({ session, isViewer }) {
         const profileRole = isMentor ? 'Mentor PT KMH' : 'Dosen Pembimbing';
 
         return (
-          <div className="viewer-banner">
-            <div className="viewer-banner-left">
+          <div className="viewer-banner" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="viewer-banner-left" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <div style={{
                 width: '36px', height: '36px', borderRadius: '50%',
                 background: 'rgba(245,158,11,0.2)', display: 'flex',
@@ -157,16 +157,33 @@ export default function CalendarGrid({ session, isViewer }) {
                 <Eye size={18} color="#92400e" />
               </div>
               <div>
-                <div style={{ color: '#92400e', fontSize: '0.85rem', fontWeight: 700, marginBottom: '2px' }}>
+                <div style={{ color: '#92400e', fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
                   {roleTitle}
                 </div>
-                <div style={{ color: '#b45309', fontSize: '0.78rem', fontWeight: 500 }}>
-                  Anda sedang memantau logbook tim magang KMH - PT Kerinci Merangin Hidro
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#b45309', fontSize: '0.8rem', fontWeight: 600 }}>
+                  Lihat Logbook milik: 
+                  <select 
+                    value={selectedUserId || ''} 
+                    onChange={handleUserChange}
+                    style={{
+                      padding: '4px 8px', borderRadius: '6px', border: '1px solid rgba(245,158,11,0.5)',
+                      background: 'rgba(255,255,255,0.9)', color: '#92400e', outline: 'none',
+                      fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer'
+                    }}
+                  >
+                    {userIds.map(uid => {
+                      const userEntry = allEntries.find(e => e.user_id === uid);
+                      const displayLabel = userEntry?.student_email || `Peserta (${uid.substring(0, 6)})`;
+                      return (
+                        <option key={uid} value={uid}>{displayLabel}</option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
             </div>
 
-            <div className="viewer-profile">
+            <div className="viewer-profile" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
                  <div style={{ color: '#92400e', fontSize: '0.75rem', fontWeight: 700, lineHeight: 1.2 }}>
                    {profileName}

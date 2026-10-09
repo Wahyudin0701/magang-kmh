@@ -1,7 +1,10 @@
 import { supabase } from './supabase';
 import { eachDayOfInterval, isSunday, format } from 'date-fns';
 
-export async function initializeLogbook(userId) {
+export async function initializeLogbook(session) {
+  const userId = session.user.id;
+  const userEmail = session.user.email;
+
   // Check if entries already exist
   const { count, error: countError } = await supabase
     .from('logbook_entries')
@@ -27,6 +30,7 @@ export async function initializeLogbook(userId) {
 
   const entriesToInsert = workingDays.map(day => ({
     user_id: userId,
+    student_email: userEmail,
     date: format(day, 'yyyy-MM-dd'),
     activity: '',
     description: '',

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 import Auth from "./components/Auth";
 import CalendarGrid from "./components/CalendarGrid";
 import { supabase } from "./lib/supabase";
 import { VIEWER_EMAILS } from "./lib/viewerConfig";
-import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye } from "lucide-react";
+import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown } from "lucide-react";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -21,6 +21,19 @@ function App() {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const [exporting, setExporting] = useState(false);
@@ -55,7 +68,7 @@ function App() {
 
       worksheet.mergeCells('A2:F2');
       const subtitleCell = worksheet.getCell('A2');
-      subtitleCell.value = 'PT KERINCI MERANGIN HIDRO';
+      subtitleCell.value = `PT KERINCI MERANGIN HIDRO - ${session.user.email}`;
       subtitleCell.font = { name: 'Arial', size: 12, bold: true };
       subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
@@ -241,7 +254,9 @@ function App() {
       // 6. Generate File
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(blob, 'Logbook_Magang_KMH.xlsx');
+      
+      const safeEmail = session.user.email.split('@')[0];
+      saveAs(blob, `Logbook_Magang_KMH_${safeEmail}.xlsx`);
     } catch (err) {
       alert("Gagal mengekspor data: " + err.message);
     } finally {
@@ -275,16 +290,77 @@ function App() {
               : <><div className="save-dot"></div>Tersimpan</>
             }
           </div>
-          {!isViewer && (
-            <button className="btn btn-green" id="btnExport" onClick={exportToExcel} disabled={exporting}>
-              {exporting ? <Loader2 size={16} className="spin" /> : <FileSpreadsheet size={16} />}
-              <span className="btn-text">{exporting ? "Menyiapkan..." : "Export Excel"}</span>
+          
+          <div className="profile-menu-container" ref={menuRef} style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.8rem', background: 'transparent',
+                border: 'none', cursor: 'pointer', padding: '0.2rem', textAlign: 'left'
+              }}
+            >
+              <div style={{
+                width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'var(--green-50)',
+                border: '2px solid var(--green-200)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--green-600)', overflow: 'hidden'
+              }}>
+                {isViewer ? <Eye size={20} /> : <User size={20} />}
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+                  {session.user.email.split('@')[0]}
+                </div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {isViewer ? 'PENGAWAS' : 'MAHASISWA'}
+                </div>
+              </div>
+              <ChevronDown size={16} color="var(--gray-400)" style={{ transform: isMenuOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />
             </button>
-          )}
-          <button className="btn btn-outline" id="btnLogout" onClick={() => supabase.auth.signOut()}>
-            <LogOut size={16} />
-            <span className="btn-text">Logout</span>
-          </button>
+
+            {isMenuOpen && (
+              <div style={{
+                position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem',
+                background: 'white', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                border: '1px solid var(--gray-200)', width: '220px', overflow: 'hidden', zIndex: 1000
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <button style={{
+                    display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                    background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
+                    cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: 'var(--gray-700)', textAlign: 'left'
+                  }}>
+                    <User size={18} /> Profil Saya
+                  </button>
+                  
+                  {!isViewer && (
+                    <button 
+                      onClick={exportToExcel} disabled={exporting}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                        background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
+                        cursor: exporting ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 600, 
+                        color: 'var(--green-600)', textAlign: 'left', opacity: exporting ? 0.6 : 1
+                      }}
+                    >
+                      {exporting ? <Loader2 size={18} className="spin" /> : <FileSpreadsheet size={18} />} 
+                      {exporting ? "Menyiapkan..." : "Export Excel"}
+                    </button>
+                  )}
+
+                  <button 
+                    onClick={() => supabase.auth.signOut()}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                      background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, 
+                      color: 'var(--danger-text)', textAlign: 'left'
+                    }}
+                  >
+                    <LogOut size={18} /> Keluar Sistem
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
