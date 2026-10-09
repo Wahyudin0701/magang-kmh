@@ -77,7 +77,6 @@ function App() {
       worksheet.mergeCells('A2:F2');
       const subtitleCell = worksheet.getCell('A2');
       
-      const { getStudentName } = await import('./lib/studentConfig');
       const studentName = getStudentName(session.user.email);
       
       subtitleCell.value = `PT KERINCI MERANGIN HIDRO - ${studentName.toUpperCase()}`;
@@ -267,7 +266,6 @@ function App() {
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
-      const { getStudentName } = await import('./lib/studentConfig');
       const safeName = getStudentName(session.user.email).replace(/[^a-zA-Z0-9]/g, '_');
       saveAs(blob, `Logbook_Magang_KMH_${safeName}.xlsx`);
     } catch (err) {
