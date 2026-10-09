@@ -3,6 +3,7 @@ import "./index.css";
 import Auth from "./components/Auth";
 import CalendarGrid from "./components/CalendarGrid";
 import Profile from "./components/Profile";
+import ResetPassword from "./components/ResetPassword";
 import { supabase } from "./lib/supabase";
 import { VIEWER_EMAILS } from "./lib/viewerConfig";
 import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown } from "lucide-react";
@@ -10,6 +11,7 @@ import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, U
 function App() {
   const [session, setSession] = useState(null);
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [isRecovering, setIsRecovering] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -18,8 +20,11 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsRecovering(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -265,6 +270,10 @@ function App() {
       setExporting(false);
     }
   };
+
+  if (isRecovering) {
+    return <ResetPassword onComplete={() => setIsRecovering(false)} />;
+  }
 
   if (!session) {
     return <Auth onLogin={setSession} />;
