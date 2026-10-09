@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 import Auth from "./components/Auth";
 import CalendarGrid from "./components/CalendarGrid";
+import Profile from "./components/Profile";
 import { supabase } from "./lib/supabase";
 import { VIEWER_EMAILS } from "./lib/viewerConfig";
 import { LogOut, FileSpreadsheet, Calendar, CheckCircle2, Clock, Loader2, Eye, User, ChevronDown } from "lucide-react";
 
 function App() {
   const [session, setSession] = useState(null);
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -324,11 +326,17 @@ function App() {
                 border: '1px solid var(--gray-200)', width: '220px', overflow: 'hidden', zIndex: 1000
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <button style={{
-                    display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
-                    background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
-                    cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: 'var(--gray-700)', textAlign: 'left'
-                  }}>
+                  <button 
+                    onClick={() => {
+                      setCurrentPage('profile');
+                      setIsMenuOpen(false);
+                    }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%', padding: '1rem',
+                      background: 'none', border: 'none', borderBottom: '1px solid var(--gray-100)',
+                      cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: 'var(--gray-700)', textAlign: 'left'
+                    }}
+                  >
                     <User size={18} /> Profil Saya
                   </button>
                   
@@ -364,9 +372,13 @@ function App() {
         </div>
       </nav>
 
-      <div className="wrapper">
-        <CalendarGrid session={session} isViewer={isViewer} />
-      </div>
+      {currentPage === 'profile' ? (
+        <Profile session={session} isViewer={isViewer} onBack={() => setCurrentPage('dashboard')} />
+      ) : (
+        <div className="wrapper">
+          <CalendarGrid session={session} isViewer={isViewer} />
+        </div>
+      )}
     </>
   );
 }
