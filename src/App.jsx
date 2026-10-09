@@ -319,14 +319,18 @@ function App() {
                 border: '2px solid var(--green-200)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'var(--green-600)', overflow: 'hidden'
               }}>
-                {isViewer ? <Eye size={20} /> : <User size={20} />}
+                {isViewer ? (
+                  <img src="/dosen.png" alt="Foto Profil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <User size={20} />
+                )}
               </div>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
-                  {isViewer ? 'Pengawas' : getStudentName(session.user.email)}
+                  {isViewer ? 'Renaldi Yulvianda, M.Kom.' : getStudentName(session.user.email)}
                 </div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {isViewer ? 'PENGAWAS' : 'MAHASISWA'}
+                  {isViewer ? 'DOSEN PEMBIMBING' : 'MAHASISWA'}
                 </div>
               </div>
               <ChevronDown size={16} color="var(--gray-400)" style={{ transform: isMenuOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />

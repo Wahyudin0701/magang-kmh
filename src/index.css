@@ -112,12 +112,10 @@
       padding: 0 1.5rem 5rem;
     }
 
-    /* ==================== TOP NAV ==================== */
     .topnav {
       position: sticky; top: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0.85rem 2rem;
-      margin: 0 -1.5rem;
+      padding: 0.85rem 3rem; /* Increased padding to prevent hugging edges */
       background: rgba(255,255,255,0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);

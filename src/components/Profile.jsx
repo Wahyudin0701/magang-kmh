@@ -60,18 +60,23 @@ export default function Profile({ session, isViewer, onBack }) {
             width: '80px', height: '80px', borderRadius: '50%',
             background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)',
             border: '3px solid rgba(255,255,255,0.5)', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', marginBottom: '1rem'
+            alignItems: 'center', justifyContent: 'center', marginBottom: '1rem',
+            overflow: 'hidden'
           }}>
-            <User size={40} color="white" />
+            {isViewer ? (
+              <img src="/dosen.png" alt="Foto Profil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <User size={40} color="white" />
+            )}
           </div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
-            {isViewer ? 'Pengawas / Mentor' : getStudentName(session.user.email)}
+            {isViewer ? 'Renaldi Yulvianda, M.Kom.' : getStudentName(session.user.email)}
           </h2>
           <div style={{
             marginTop: '0.5rem', padding: '0.3rem 0.8rem', background: 'rgba(255,255,255,0.2)',
             borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em'
           }}>
-            {isViewer ? 'PENGAWAS' : 'MAHASISWA MAGANG'}
+            {isViewer ? 'DOSEN PEMBIMBING' : 'MAHASISWA MAGANG'}
           </div>
         </div>
 

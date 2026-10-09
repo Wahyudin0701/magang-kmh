@@ -144,8 +144,6 @@ export default function CalendarGrid({ session, isViewer }) {
       {isViewer && (() => {
         const isMentor = session?.user?.email === 'mentormagangkmh@gmail.com';
         const roleTitle = isMentor ? 'Mode Monitoring Mentor Lapangan' : 'Mode Monitoring Dosen Pembimbing';
-        const profileName = isMentor ? 'Mentor Lapangan' : 'Renaldi Yulvianda, M.Kom.';
-        const profileRole = isMentor ? 'Mentor PT KMH' : 'Dosen Pembimbing';
 
         return (
           <div className="viewer-banner" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -182,33 +180,6 @@ export default function CalendarGrid({ session, isViewer }) {
                   </select>
                 </div>
               </div>
-            </div>
-
-            <div className="viewer-profile" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-                 <div style={{ color: '#92400e', fontSize: '0.75rem', fontWeight: 700, lineHeight: 1.2 }}>
-                   {profileName}
-                 </div>
-                 <div style={{ color: '#b45309', fontSize: '0.65rem', fontWeight: 600 }}>
-                   {profileRole}
-                 </div>
-              </div>
-              {isMentor ? (
-                <div style={{
-                  width: '38px', height: '38px', borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: 'var(--bg-card, #ffffff)', border: '2px solid rgba(245,158,11,0.5)',
-                  color: '#b45309'
-                }}>
-                  <Users size={20} />
-                </div>
-              ) : (
-                <img 
-                  src="/dosen.png" 
-                  alt="Foto Profil" 
-                  style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(245,158,11,0.5)' }} 
-                />
-              )}
             </div>
           </div>
         );
